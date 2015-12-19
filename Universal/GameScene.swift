@@ -44,7 +44,7 @@ class GameScene: InitScene {
     // MARK: - Constants & Properties
     // *************************************************************
     
-    let kImpulse: CGFloat = 200.0
+    let kImpulse: CGFloat = 1000.0
     var dt: NSTimeInterval = 0
     var lastUpdateTime: NSTimeInterval = 0
     var gameState: GameState = .Tutorial
@@ -187,8 +187,49 @@ class GameScene: InitScene {
         ship.zPosition = Layer.Hero.rawValue
         ship.position = CGPoint(x: size.width/2, y: self.frame.height * 0.4)
         
+        let offsetX = ship.frame.size.width * ship.anchorPoint.x;
+        let offsetY = ship.frame.size.height * ship.anchorPoint.y;
+        
+        let path = CGPathCreateMutable();
+        let transform:UnsafePointer<CGAffineTransform> = nil
+        
+        CGPathMoveToPoint(path, transform, 1, 2)
+        
+        CGPathMoveToPoint(path, transform, 97 - offsetX, 173 - offsetY);
+        CGPathAddLineToPoint(path, transform, 90 - offsetX, 163 - offsetY);
+        CGPathAddLineToPoint(path, transform, 85 - offsetX, 151 - offsetY);
+        CGPathAddLineToPoint(path, transform, 82 - offsetX, 138 - offsetY);
+        CGPathAddLineToPoint(path, transform, 80 - offsetX, 128 - offsetY);
+        CGPathAddLineToPoint(path, transform, 70 - offsetX, 125 - offsetY);
+        CGPathAddLineToPoint(path, transform, 67 - offsetX, 123 - offsetY);
+        CGPathAddLineToPoint(path, transform, 68 - offsetX, 107 - offsetY);
+        CGPathAddLineToPoint(path, transform, 0 - offsetX, 48 - offsetY);
+        CGPathAddLineToPoint(path, transform, 0 - offsetX, 43 - offsetY);
+        CGPathAddLineToPoint(path, transform, 13 - offsetX, 17 - offsetY);
+        CGPathAddLineToPoint(path, transform, 19 - offsetX, 14 - offsetY);
+        CGPathAddLineToPoint(path, transform, 70 - offsetX, 14 - offsetY);
+        CGPathAddLineToPoint(path, transform, 72 - offsetX, 11 - offsetY);
+        CGPathAddLineToPoint(path, transform, 75 - offsetX, 0 - offsetY);
+        CGPathAddLineToPoint(path, transform, 123 - offsetX, 0 - offsetY);
+        CGPathAddLineToPoint(path, transform, 125 - offsetX, 12 - offsetY);
+        CGPathAddLineToPoint(path, transform, 176 - offsetX, 14 - offsetY);
+        CGPathAddLineToPoint(path, transform, 185 - offsetX, 17 - offsetY);
+        CGPathAddLineToPoint(path, transform, 196 - offsetX, 40 - offsetY);
+        CGPathAddLineToPoint(path, transform, 196 - offsetX, 48 - offsetY);
+        CGPathAddLineToPoint(path, transform, 129 - offsetX, 107 - offsetY);
+        CGPathAddLineToPoint(path, transform, 131 - offsetX, 119 - offsetY);
+        CGPathAddLineToPoint(path, transform, 129 - offsetX, 124 - offsetY);
+        CGPathAddLineToPoint(path, transform, 116 - offsetX, 127 - offsetY);
+        CGPathAddLineToPoint(path, transform, 116 - offsetX, 140 - offsetY);
+        CGPathAddLineToPoint(path, transform, 114 - offsetX, 150 - offsetY);
+        CGPathAddLineToPoint(path, transform, 108 - offsetX, 159 - offsetY);
+        CGPathAddLineToPoint(path, transform, 104 - offsetX, 166 - offsetY);
+        CGPathAddLineToPoint(path, transform, 101 - offsetX, 172 - offsetY);
+        
+        CGPathCloseSubpath(path);
+        
         // Add physics body for Ship
-        ship.physicsBody = SKPhysicsBody(rectangleOfSize: ship.size)
+        ship.physicsBody = SKPhysicsBody(polygonFromPath: path)
         ship.physicsBody?.categoryBitMask = PhysicsCategory.Hero
         ship.physicsBody?.collisionBitMask = PhysicsCategory.Ground
         
@@ -226,8 +267,9 @@ class GameScene: InitScene {
     
     func fireThrusters() {
         // Apply impulse
-        ship.physicsBody?.velocity = CGVectorMake(0, kImpulse/2)
-        ship.physicsBody?.applyImpulse(CGVectorMake(0, kImpulse))
+        let shipDirection = Float(ship.zRotation + CGFloat(M_PI_2));
+        let force = CGVectorMake(kImpulse * CGFloat(cosf(shipDirection)), kImpulse * CGFloat(sinf(shipDirection)))
+        ship.physicsBody?.applyForce(force)
         
         // Show Jet Stream, zero means infinite particles
         jetParticle.numParticlesToEmit = 0
@@ -251,13 +293,13 @@ class GameScene: InitScene {
     // *************************************************************
     
     func playRandomBackgroundMusic() {
-        let randomSong = Int.random(min: 0, max: backgroundSongs.count-1)
-        sktAudio.playBackgroundMusic(backgroundSongs[randomSong])
-        print("Background music: \(backgroundSongs[randomSong])")
+//        let randomSong = Int.random(min: 0, max: backgroundSongs.count-1)
+//        sktAudio.playBackgroundMusic(backgroundSongs[randomSong])
+//        print("Background music: \(backgroundSongs[randomSong])")
     }
     
     func playBackgroundMusic(songName: String) {
-        sktAudio.playBackgroundMusic(songName)
+//        sktAudio.playBackgroundMusic(songName)
     }
     
     // *************************************************************
